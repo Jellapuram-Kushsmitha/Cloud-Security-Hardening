@@ -1,0 +1,41 @@
+name: Container Security Scan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docker/**'          # only run when docker files change
+      - '.github/workflows/trivy-scan.yml'
+  pull_request:
+    branches: [main]
+
+jobs:
+  trivy-container-scan:
+    name: Trivy CVE Scanner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        working-directory: docker
+        run: |
+          docker build -t security-webapp:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: security-webapp:${{ github.sha }}
+          format: table
+          exit-code: '1'         # FAIL pipeline if issues found
+          ignore-unfixed: true   # only fail on fixable CVEs
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()             # upload even if scan failed
+        with:
+          sarif_file: trivy-results.sarif
+        continue-on-error: true

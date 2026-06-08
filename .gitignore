@@ -21,3 +21,5 @@ secrets/
 .DS_Store
 *.swp
 __pycache__/
+bin/
+docker/trivy-report.json
