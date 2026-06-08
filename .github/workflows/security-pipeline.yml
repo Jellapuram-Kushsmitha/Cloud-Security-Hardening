@@ -73,7 +73,7 @@ jobs:
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
-         scan-type: fs
+          scan-type: fs
           scan-ref: .
           format: table
           exit-code: '1'
