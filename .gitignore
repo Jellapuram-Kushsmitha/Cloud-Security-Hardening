@@ -1,0 +1,23 @@
+# Terraform state files — contain sensitive data
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+tfplan
+
+# AWS credentials — never commit
+.aws/
+*.pem
+*_key.pem
+credentials
+
+# Secrets
+*.secret
+secrets/
+.env
+.env.*
+
+# OS files
+.DS_Store
+*.swp
+__pycache__/
